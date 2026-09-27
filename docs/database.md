@@ -1,13 +1,10 @@
-### Modelo de datos
+# Modelo de datos
 
-El sistema utiliza un modelo de datos relacional compuesto por las entidades
-Usuario, Actividad, Bloque de clase, Clase y Turno.
+El sistema utiliza un modelo de datos relacional compuesto por las entidades Usuario, Actividad, Bloque de clase, Clase y Turno.
 
-La entidad Bloque de clase permite generar y administrar conjuntamente varias
-clases relacionadas. Cada clase representa un encuentro concreto y puede
-pertenecer a un bloque o haber sido creada individualmente.
+La entidad Bloque de clase permite generar y administrar conjuntamente varias clases relacionadas. Cada clase representa un encuentro concreto y puede pertenecer a un bloque o haber sido creada individualmente.
 
-#### Diagrama Entidad-Relación
+## Diagrama Entidad-Relación
 
 ```mermaid
 erDiagram
@@ -88,7 +85,7 @@ erDiagram
 
 ```
 
-#### Descripción de las entidades
+## Descripción de las entidades
 
 | Entidad       | Descripción                                                        |
 | ------------- | ------------------------------------------------------------------ |
@@ -98,7 +95,7 @@ erDiagram
 | `Clase`       | Representa una clase concreta en una fecha y horario determinados. |
 | `Turno`       | Registra la reserva de un alumno para una clase.                   |
 
-#### Relaciones principales
+## Relaciones principales
 
 - Una actividad puede utilizarse en numerosos bloques y clases.
 - Un profesor puede estar asignado a múltiples bloques y clases.
@@ -107,7 +104,7 @@ erDiagram
 - Un alumno puede reservar múltiples turnos.
 - Cada turno corresponde a una única clase y a un único alumno.
 
-#### Reglas de integridad
+## Reglas de integridad
 
 - El correo electrónico de cada usuario debe ser único.
 - El DNI de cada usuario, cuando se encuentre informado, debe ser único.
@@ -127,19 +124,19 @@ erDiagram
 - No pueden registrarse turnos para clases canceladas o eliminadas.
 - Cuando un turno se encuentre cancelado, debe registrarse su fecha de cancelación.
 
-#### Índices
+## Índices
 
 Con el objetivo de optimizar las consultas más frecuentes del sistema, se
 definieron los siguientes índices:
 
-| Índice | Tabla | Campos | Tipo | Finalidad |
-|---|---|---|---|---|
-| `idx_clase_inicio` | `clase` | `inicio` | Simple | Consultar clases por fecha o período. |
-| `idx_clase_actividad_inicio` | `clase` | `actividad_id`, `inicio` | Compuesto | Filtrar clases por actividad y fecha. |
-| `idx_clase_profesor_inicio` | `clase` | `profesor_id`, `inicio` | Compuesto | Consultar la agenda del profesor y detectar superposiciones. |
-| `idx_clase_bloque` | `clase` | `bloque_clase_id` | Simple | Modificar o cancelar las clases pertenecientes a un bloque. |
-| `idx_turno_clase_estado` | `turno` | `clase_id`, `estado` | Compuesto | Obtener los turnos confirmados y controlar el cupo. |
-| `idx_turno_alumno_estado` | `turno` | `alumno_id`, `estado` | Compuesto | Consultar los turnos de un alumno según su estado. |
-| `idx_turno_fecha_reserva` | `turno` | `fecha_reserva` | Simple | Consultar y contabilizar reservas por período. |
+| Índice                       | Tabla   | Campos                   | Tipo      | Finalidad                                                    |
+| ---------------------------- | ------- | ------------------------ | --------- | ------------------------------------------------------------ |
+| `idx_clase_inicio`           | `clase` | `inicio`                 | Simple    | Consultar clases por fecha o período.                        |
+| `idx_clase_actividad_inicio` | `clase` | `actividad_id`, `inicio` | Compuesto | Filtrar clases por actividad y fecha.                        |
+| `idx_clase_profesor_inicio`  | `clase` | `profesor_id`, `inicio`  | Compuesto | Consultar la agenda del profesor y detectar superposiciones. |
+| `idx_clase_bloque`           | `clase` | `bloque_clase_id`        | Simple    | Modificar o cancelar las clases pertenecientes a un bloque.  |
+| `idx_turno_clase_estado`     | `turno` | `clase_id`, `estado`     | Compuesto | Obtener los turnos confirmados y controlar el cupo.          |
+| `idx_turno_alumno_estado`    | `turno` | `alumno_id`, `estado`    | Compuesto | Consultar los turnos de un alumno según su estado.           |
+| `idx_turno_fecha_reserva`    | `turno` | `fecha_reserva`          | Simple    | Consultar y contabilizar reservas por período.               |
 
 ---
