@@ -113,7 +113,7 @@ Al momento de la primera entrega se cuenta con:
 
 ---
 
-### 9. Estructura del repositorio
+### 8. Estructura del repositorio
 
 ```text
 Administrador_Arizona/
