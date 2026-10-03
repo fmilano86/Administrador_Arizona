@@ -11,4 +11,4 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-# Este archivo lee las variables de tu .env (DATABASE_URL, JWT_SECRET) una sola vez y las deja disponibles para todo el backend como settings.database_url, settings.jwt_secret, etc.
+# Este archivo lee las variables del .env (DATABASE_URL, JWT_SECRET) una sola vez y las deja disponibles para todo el backend como settings.database_url, settings.jwt_secret, etc.
