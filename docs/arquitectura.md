@@ -34,13 +34,14 @@ Se propone un monolito modular dividido en capas, no una arquitectura de microse
 
 ## 3. Capas previstas para el frontend
 
-| Capa                      | Responsabilidad                                                                                                               | Tecnología         |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| Presentación / UI         | Componentes visuales reutilizables (botones, grillas, tablas) y layout general de la app.                                     | React + TypeScript |
-| Ruteo y control de acceso | Definición de rutas y guards que restringen pantallas según el rol del usuario autenticado (alumno, profesor, administrador). | React Router       |
-| Estado de datos remotos   | Manejo de las llamadas a la API REST del backend: cacheo, refetching y sincronización de datos de clases, turnos y usuarios.  | TanStack Query     |
-| Estado de sesión          | Persistencia del usuario autenticado, su rol y el token JWT en el cliente.                                                    | Zustand            |
-| Servicios                 | Funciones que encapsulan las llamadas HTTP a cada recurso de la API (auth, actividades, clases, turnos, usuarios).            | Axios/Fetch        |
+| Capa                      | Responsabilidad                                                                                                               | Tecnología                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Presentación / UI         | Componentes visuales reutilizables (botones, grillas, tablas) y layout general de la app.                                     | React + TypeScript, Tailwind CSS |
+| Ruteo y control de acceso | Definición de rutas y guards que restringen pantallas según el rol del usuario autenticado (alumno, profesor, administrador). | React Router                     |
+| Estado de datos remotos   | Manejo de las llamadas a la API REST del backend: cacheo, refetching y sincronización de datos de clases, turnos y usuarios.  | TanStack Query                   |
+| Estado de sesión          | Persistencia del usuario autenticado, su rol y el token JWT en el cliente.                                                    | Zustand                          |
+| Servicios                 | Funciones que encapsulan las llamadas HTTP a cada recurso de la API (auth, actividades, clases, turnos, usuarios).            | Axios                            |
+| Formularios y validación  | Validación de datos de entrada en el cliente.                                                                                 | React Hook Form + Zod            |
 
 La organización interna de `apps/web/` sigue un enfoque por _features_, agrupando cada módulo (autenticación, vistas de alumno, de profesor y de administrador) junto con sus propios componentes, hooks y servicios. Esto facilita ubicar y mantener el código de cada pantalla de forma aislada, y mantiene una correspondencia directa con la separación de roles y permisos.
 
