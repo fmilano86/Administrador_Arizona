@@ -1,14 +1,15 @@
-import "./App.css";
+import { QueryClientProvider } from "@tanstack/react-query";
+
+import { Toaster } from "@/components/common";
+import { queryClient } from "@/lib/queryClient";
+import { AppRoutes } from "@/routes/AppRoutes";
 
 function App() {
   return (
-    <>
-      <section>
-        <div>
-          <h1>Arizona - Health & Studio</h1>
-        </div>
-      </section>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <AppRoutes />
+      <Toaster />
+    </QueryClientProvider>
   );
 }
 
