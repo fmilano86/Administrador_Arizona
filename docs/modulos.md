@@ -139,5 +139,4 @@ Módulos en los que se organiza el desarrollo del sistema, con su descripción, 
 
 ## Fuera de alcance
 
-No se desarrollan en este TFI: gestión de múltiples sucursales, gestión contable avanzada, integración con sistemas de facturación externos ni
-procesamiento de pagos con integraciones complejas de terceros.
+No se desarrollan en este TFI: gestión de múltiples sucursales, gestión contable avanzada, integración con sistemas de facturación externos ni procesamiento de pagos con integraciones complejas de terceros.

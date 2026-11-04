@@ -58,14 +58,13 @@ Estas funcionalidades de notificación se consideran parte de las mejoras poster
 Repositorio único en GitHub, con una estructura prevista similar a:
 
 ```text
-├── backend/
 ├── apps/
-│   ├── web/
-│   └── mobile/
-├── packages/
-│   └── shared/
+│   └── web/
+├── backend/
 ├── database/
 ├── docs/
+├── packages/
+│   └── shared/
 └── README.md
 ```
 
@@ -108,15 +107,15 @@ Al momento de la primera entrega se cuenta con:
 ```text
 Administrador_Arizona/
 ├── apps/
-│   └── web/          # Frontend: React + TypeScript + Vite
-├── backend/           # Backend: FastAPI (estructura de carpetas, en desarrollo)
-├── database/           # schema.sql: script DDL de PostgreSQL
-├── docs/                # database.md, modulos.md, arquitectura.md
-├── Imagenes/              # Material de diseño (Figma, paleta de colores, logos)
+│   └── web/          # Frontend: React + TypeScript + Vite.
+├── backend/          # Backend: FastAPI (estructura de carpetas, en desarrollo).
+├── database/         # schema.sql: script DDL de PostgreSQL.
+├── docs/             # arquitectura.md, contrato-api.md, modelo-datos.md, modulos.md.
+├── Imagenes/         # Material de diseño (figma, paleta de colores, logos).
 └── README.md
 ```
 
 - **Esquema de base de datos:** [`/database/schema.sql`](./database/schema.sql), documentado en [`/docs/modelo-datos.md`](./docs/modelo-datos.md).
-- **Módulos y arquitectura:** [`/docs`](./docs).
+- **Módulos, arquitectura y contratos:** [`/docs`](./docs).
 - **Frontend:** [`/apps/web`](./apps/web).
 - **Backend:** [`/backend`](./backend).
