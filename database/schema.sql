@@ -72,10 +72,10 @@ CREATE TABLE clase (
     CHECK (fin > inicio)
 );
 
-CREATE INDEX idx_clase_bloque     ON clase(bloque_clase_id);
-CREATE INDEX idx_clase_inicio     ON clase(inicio);
-CREATE INDEX idx_clase_actividad  ON clase(actividad_id);
-CREATE INDEX idx_clase_profesor   ON clase(profesor_id);
+CREATE INDEX idx_clase_bloque             ON clase(bloque_clase_id);
+CREATE INDEX idx_clase_inicio             ON clase(inicio);
+CREATE INDEX idx_clase_actividad_inicio   ON clase(actividad_id, inicio);
+CREATE INDEX idx_clase_profesor_inicio    ON clase(profesor_id, inicio);
 
 CREATE TABLE turno (
     id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -96,4 +96,11 @@ CREATE INDEX idx_turno_clase_confirmado
     ON turno (clase_id)
     WHERE estado = 'CONFIRMADO';
 
-CREATE INDEX idx_turno_alumno ON turno (alumno_id);
+CREATE INDEX idx_turno_clase_estado
+    ON turno (clase_id, estado);
+
+CREATE INDEX idx_turno_alumno_estado
+    ON turno (alumno_id, estado);
+
+CREATE INDEX idx_turno_fecha_reserva
+    ON turno (fecha_reserva);
