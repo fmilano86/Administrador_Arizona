@@ -3,13 +3,27 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.db.session import engine
-
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.auth import router as auth_router
+from app.api.actividades import router as actividades_router
+from app.api.usuarios import router as usuarios_router
 
 app = FastAPI(
     title="Administrador Arizona API",
     version="0.1.0",
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(actividades_router, prefix="/actividades", tags=["actividades"])
+app.include_router(usuarios_router, prefix="/usuarios", tags=["usuarios"])
 
 @app.get("/health")
 def health() -> dict[str, str]:
