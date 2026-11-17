@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import BigInteger, Column, Date, Enum, String, TIMESTAMP
+from sqlalchemy import BigInteger, Column, Date, Enum, Identity, String, TIMESTAMP
 from sqlalchemy.sql import func
 
 from app.db.base import Base
@@ -15,7 +15,7 @@ class RolUsuario(str, enum.Enum):
 class Usuario(Base):
     __tablename__ = "usuario"
 
-    id = Column(BigInteger, primary_key=True)
+    id = Column(BigInteger, Identity(always=True), primary_key=True)
     rol = Column(Enum(RolUsuario, name="rol_usuario", create_type=False), nullable=False)
     nombre = Column(String(100), nullable=False)
     apellido = Column(String(100), nullable=False)
