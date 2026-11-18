@@ -48,3 +48,6 @@ def actualizar_usuario(db: Session, usuario: Usuario, data: UsuarioUpdate) -> Us
     db.commit()
     db.refresh(usuario)
     return usuario
+
+def obtener_usuario_por_dni(db: Session, dni: str) -> Usuario | None:
+    return db.query(Usuario).filter(Usuario.dni == dni).first()

@@ -11,6 +11,7 @@ from app.services.usuario_service import (
     crear_usuario,
     listar_usuarios,
     obtener_usuario,
+    obtener_usuario_por_dni,
     obtener_usuario_por_email,
 )
 
@@ -37,6 +38,11 @@ def crear(
             status_code=status.HTTP_409_CONFLICT,
             detail="Ya existe un usuario con ese email",
         )
+    if data.dni and obtener_usuario_por_dni(db, data.dni):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Ya existe un usuario con ese DNI",
+        )
     return crear_usuario(db, data)
 
 
@@ -60,5 +66,14 @@ def actualizar(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Ya existe un usuario con ese email",
+        )
+    if (
+        data.dni
+        and data.dni != usuario.dni
+        and obtener_usuario_por_dni(db, data.dni)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Ya existe un usuario con ese DNI",
         )
     return actualizar_usuario(db, usuario, data)

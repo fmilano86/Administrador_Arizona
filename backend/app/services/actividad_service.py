@@ -28,3 +28,6 @@ def actualizar_actividad(
     db.commit()
     db.refresh(actividad)
     return actividad
+
+def obtener_actividad_por_nombre(db: Session, nombre: str) -> Actividad | None:
+    return db.query(Actividad).filter(Actividad.nombre == nombre).first()

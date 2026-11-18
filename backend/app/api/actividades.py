@@ -10,6 +10,7 @@ from app.services.actividad_service import (
     crear_actividad,
     listar_actividades,
     obtener_actividad,
+    obtener_actividad_por_nombre,
 )
 
 router = APIRouter()
@@ -26,6 +27,11 @@ def crear(
     db: Session = Depends(get_db),
     _usuario=Depends(require_roles(RolUsuario.ADMINISTRADOR)),
 ):
+    if obtener_actividad_por_nombre(db, data.nombre):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Ya existe una actividad con ese nombre",
+        )
     return crear_actividad(db, data)
 
 
@@ -40,5 +46,14 @@ def actualizar(
     if not actividad:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Actividad no encontrada"
+        )
+    if (
+        data.nombre
+        and data.nombre != actividad.nombre
+        and obtener_actividad_por_nombre(db, data.nombre)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Ya existe una actividad con ese nombre",
         )
     return actualizar_actividad(db, actividad, data)

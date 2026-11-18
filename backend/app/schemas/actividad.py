@@ -24,3 +24,9 @@ class ActividadUpdate(BaseModel):
     nombre: Optional[str] = None
     descripcion: Optional[str] = None
     eliminado_en: Optional[datetime] = None
+
+class ActividadResumenOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    nombre: str

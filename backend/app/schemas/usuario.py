@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.models.usuario import RolUsuario
 
@@ -27,3 +27,13 @@ class UsuarioUpdate(BaseModel):
     fecha_nacimiento: Optional[date] = None
     password: Optional[str] = None
     eliminado_en: Optional[str] = None
+
+class UsuarioResumenOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    nombre: str
+    apellido: str
+    email: Optional[EmailStr] = None
+    telefono: Optional[str] = None
+    fecha_nacimiento: Optional[date] = None

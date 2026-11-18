@@ -4,9 +4,13 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.db.session import engine
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.api.auth import router as auth_router
 from app.api.actividades import router as actividades_router
 from app.api.usuarios import router as usuarios_router
+from app.api.bloques import router as bloques_router
+from app.api.clases import router as clases_router
+from app.api.turnos import router as turnos_router
 
 app = FastAPI(
     title="Administrador Arizona API",
@@ -24,6 +28,9 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(actividades_router, prefix="/actividades", tags=["actividades"])
 app.include_router(usuarios_router, prefix="/usuarios", tags=["usuarios"])
+app.include_router(bloques_router, prefix="/bloques", tags=["bloques"])
+app.include_router(clases_router, prefix="/clases", tags=["clases"])
+app.include_router(turnos_router, prefix="/turnos", tags=["turnos"])
 
 @app.get("/health")
 def health() -> dict[str, str]:
