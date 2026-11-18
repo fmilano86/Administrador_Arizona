@@ -40,12 +40,14 @@ Más allá de digitalizar el proceso existente, la propuesta busca agregar valor
 - **Base de datos:** PostgreSQL, vía SQLAlchemy (ORM)
 - **Código compartido:** paquete TypeScript compartido (tipos y validaciones) entre web y mobile, en un monorepo pnpm
 
+> **Nota sobre el alcance final:** por los tiempos de la cursada, el proyecto se desarrolló como aplicación **web únicamente**. La app mobile y el paquete de código compartido (`packages/shared`) quedaron fuera del alcance final — en `docs/modulos.md` ya estaban anotadas como mejoras posteriores, no como parte del MVP. El resto del stack se mantuvo según lo planificado.
+
 #### 3.1 Notificaciones
 
 - Email mediante SMTP.
 - Push mediante Expo Notifications.
 
-Estas funcionalidades de notificación se consideran parte de las mejoras posteriores y no son indispensables para el funcionamiento inicial del MVP.
+Estas funcionalidades de notificación se consideran parte de las mejoras posteriores y no son indispensables para el funcionamiento inicial del MVP. **No se implementaron en esta entrega.**
 
 #### 3.2 Despliegue
 
@@ -53,20 +55,11 @@ Estas funcionalidades de notificación se consideran parte de las mejoras poster
 - **Backend:** Render/Railway
 - **Base de datos:** Supabase o similar
 
+Ver el estado real del despliegue en la [sección 9](#9-despliegue).
+
 #### 3.3 Control de versiones
 
-Repositorio único en GitHub, con una estructura prevista similar a:
-
-```text
-├── apps/
-│   └── web/
-├── backend/
-├── database/
-├── docs/
-├── packages/
-│   └── shared/
-└── README.md
-```
+Repositorio único en GitHub. Estructura final (ver [sección 6](#6-estructura-del-repositorio)).
 
 ### 4. Justificación tecnológica
 
@@ -91,16 +84,28 @@ Al ser un stack estándar y ampliamente documentado (React, FastAPI, PostgreSQL)
 
 ### 5. Estado de avance
 
-Al momento de la primera entrega se cuenta con:
+El sistema está funcional de punta a punta: backend, base de datos y frontend web para los tres roles (alumno, profesor, administrador).
 
-- Idea del proyecto definida.
-- Problemática identificada y validada.
-- Stakeholder principal identificado.
-- Entrevistas realizadas con la administradora del estudio.
-- Actores y flujos principales relevados.
-- Stack tecnológico definido.
-- Equipo de desarrolladores formado.
-- Alcance del MVP definido y priorizado.
+**Implementado y en funcionamiento:**
+
+- Registro e inicio de sesión con JWT, por rol (alumno, profesor, administrador).
+- Alta y gestión de actividades (Pilates, Yoga, Sculpt).
+- Alta y gestión de alumnos y profesores, con baja lógica.
+- Horarios recurrentes (bloques semanales) que generan clases automáticamente.
+- Grilla semanal de clases con cupos en tiempo real.
+- Reserva y cancelación de turnos, con validación automática de superposición horaria y de cupo.
+- **Lista de espera automática:** cuando una clase está completa, el alumno puede anotarse; al liberarse un lugar, se asigna automáticamente al primero de la lista (orden de llegada), con re-validación de cupo y superposición horaria en el momento de la promoción.
+- **Aviso de cumpleaños:** el administrador ve, en el tablero principal, los alumnos y profesores que cumplen años en los próximos días.
+- Distinción automática entre turno puntual, recurrente y "clase de prueba" (primera reserva de cada alumno).
+- Historial de clases dictadas para el profesor (separado de la agenda del día a día).
+- Restricción de búsqueda a fechas futuras para alumno y profesor.
+- Migraciones de base de datos con Alembic, sobre una base PostgreSQL alojada en Supabase.
+
+**Pendiente para la entrega final:**
+
+- Despliegue en línea del sistema (ver [sección 9](#9-despliegue)).
+- Suite de tests automatizados del backend.
+- Informe Final en PDF y video de presentación (ver [sección 10](#10-informe-final-y-video)).
 
 ### 6. Estructura del repositorio
 
@@ -108,7 +113,7 @@ Al momento de la primera entrega se cuenta con:
 Administrador_Arizona/
 ├── apps/
 │   └── web/          # Frontend: React + TypeScript + Vite.
-├── backend/          # Backend: FastAPI (estructura de carpetas, en desarrollo).
+├── backend/          # Backend: FastAPI, SQLAlchemy, Alembic.
 ├── database/         # schema.sql: script DDL de PostgreSQL.
 ├── docs/             # arquitectura.md, contrato-api.md, modelo-datos.md, modulos.md.
 ├── Imagenes/         # Material de diseño (figma, paleta de colores, logos).
@@ -119,3 +124,27 @@ Administrador_Arizona/
 - **Módulos, arquitectura y contratos:** [`/docs`](./docs).
 - **Frontend:** [`/apps/web`](./apps/web).
 - **Backend:** [`/backend`](./backend).
+
+### 7. Cómo ejecutar el sistema
+
+1. **Backend:** seguir [`/backend/README.md`](./backend/README.md) (configurar `.env`, instalar dependencias, `uvicorn app.main:app --reload`). Queda en `http://127.0.0.1:8000` (documentación interactiva en `/docs`).
+2. **Frontend:** seguir [`/apps/web/README.md`](./apps/web/README.md) (`npm install`, `npm run dev`). Queda en `http://localhost:5173`.
+3. **Base de datos:** PostgreSQL. El esquema completo está en [`/database/schema.sql`](./database/schema.sql); el backend usa Alembic para migraciones futuras a partir de una base ya existente con ese esquema.
+
+Credenciales de prueba contra el backend real: pedir al equipo (no se publican en este repositorio).
+
+### 8. Limitaciones y trabajo futuro
+
+- No incluye notificaciones por email ni push (quedaron para una etapa posterior, según lo definido en `docs/modulos.md`).
+- No incluye gestión de pagos ni facturación.
+- No se implementó la aplicación mobile ni el paquete de código compartido planificados originalmente.
+- No cuenta todavía con una suite de tests automatizados.
+
+### 9. Despliegue
+
+`[PENDIENTE: completar con el/los enlace(s) al sistema desplegado — frontend en Vercel/Netlify y/o backend en Render/Railway — antes de la entrega final.]`
+
+### 10. Informe Final y video
+
+- Informe Final (PDF): `[PENDIENTE: enlace o ruta dentro del repositorio]`
+- Video de presentación: `[PENDIENTE: enlace]`

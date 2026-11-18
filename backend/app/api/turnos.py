@@ -79,7 +79,7 @@ def cancelar(
             detail="No tenés permisos para esta acción",
         )
 
-    if turno.estado != EstadoTurno.CONFIRMADO:
+    if turno.estado not in (EstadoTurno.CONFIRMADO, EstadoTurno.EN_ESPERA):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT, detail="El turno ya está cancelado"
         )
