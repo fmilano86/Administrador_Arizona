@@ -78,6 +78,15 @@ def construir_detalle(
     )
 
 
+def _es_primera_reserva(
+    db: Session, alumno_id: int, excluir_turno_id: int | None = None
+) -> bool:
+    query = db.query(Turno.id).filter(Turno.alumno_id == alumno_id)
+    if excluir_turno_id is not None:
+        query = query.filter(Turno.id != excluir_turno_id)
+    return query.first() is None
+
+
 def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
     clase = db.query(Clase).filter(Clase.id == clase_id).first()
     if clase is None:
@@ -134,17 +143,26 @@ def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
             detail="Ya tenés otro turno que se superpone con el horario de esta clase",
         )
 
+    es_primera = _es_primera_reserva(
+        db, alumno.id, turno_existente.id if turno_existente else None
+    )
+    if es_primera:
+        tipo = TipoTurno.PRUEBA
+    elif clase.bloque_clase_id is not None:
+        tipo = TipoTurno.RECURRENTE
+    else:
+        tipo = TipoTurno.PUNTUAL
+
     if turno_existente:
-        # Había cancelado esa clase antes: se reactiva el mismo turno
-        # (no puede haber dos filas por alumno+clase).
         turno_existente.estado = EstadoTurno.CONFIRMADO
         turno_existente.fecha_cancelacion = None
+        turno_existente.tipo = tipo
         turno = turno_existente
     else:
         turno = Turno(
             alumno_id=alumno.id,
             clase_id=clase_id,
-            tipo=TipoTurno.PUNTUAL,
+            tipo=tipo,
             estado=EstadoTurno.CONFIRMADO,
         )
         db.add(turno)
@@ -152,7 +170,6 @@ def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
     db.commit()
     db.refresh(turno)
     return turno
-
 
 def cancelar_turno(db: Session, turno: Turno) -> Turno:
     turno.estado = EstadoTurno.CANCELADO

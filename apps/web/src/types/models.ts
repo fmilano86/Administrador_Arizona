@@ -1,11 +1,11 @@
 // Entidades del dominio, alineadas con el modelo de datos de la sección 8 del README.md. Los nombres de campos están en snake_case a propósito, coinciden con lo que devuelve la API (Pydantic/SQLAlchemy), así no hace falta una capa de mapeo. Candidato a moverse a `packages/shared` cuando exista. Los valores de los enums marcados con (*) hay que confirmarlos con el backend.
 
-export type Rol = "ALUMNO" | "PROFESOR" | "ADMINISTRADOR"; // (*)
-export type EstadoBloque = "ACTIVO" | "CANCELADO"; // (*)
-export type FrecuenciaBloque = "SEMANAL"; // (*)
-export type EstadoClase = "PROGRAMADA" | "CANCELADA" | "FINALIZADA"; // (*)
-export type EstadoTurno = "CONFIRMADO" | "CANCELADO"; // (*)
-export type TipoTurno = "REGULAR" | "PRUEBA"; // (*)
+export type Rol = "ALUMNO" | "PROFESOR" | "ADMINISTRADOR";
+export type EstadoBloque = "ACTIVO" | "FINALIZADO" | "CANCELADO";
+export type FrecuenciaBloque = "SEMANAL";
+export type EstadoClase = "PROGRAMADA" | "CANCELADA" | "FINALIZADA";
+export type EstadoTurno = "CONFIRMADO" | "CANCELADO";
+export type TipoTurno = "PUNTUAL" | "RECURRENTE" | "PRUEBA";
 
 // Fecha ISO 8601 con zona horaria (TIMESTAMPTZ).
 export type IsoDateTime = string;

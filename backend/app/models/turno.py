@@ -10,6 +10,7 @@ from app.db.base import Base
 class TipoTurno(str, enum.Enum):
     PUNTUAL = "PUNTUAL"
     RECURRENTE = "RECURRENTE"
+    PRUEBA = "PRUEBA"
 
 
 class EstadoTurno(str, enum.Enum):
