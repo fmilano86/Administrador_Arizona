@@ -116,6 +116,7 @@ export default function ClassScheduleView() {
             size="sm"
             onClick={() => irASemana(addDays(semana, -7))}
             aria-label="Semana anterior"
+            disabled={esSemanaActual}
           >
             <ChevronLeft className="size-5" aria-hidden="true" />
           </Button>

@@ -2,6 +2,7 @@ import {
   CalendarClock,
   CalendarDays,
   GraduationCap,
+  History,
   House,
   LayoutDashboard,
   Sparkles,
@@ -30,6 +31,7 @@ import LoginPage from "@/features/auth/pages/LoginPage";
 import PerfilPage from "@/features/auth/pages/PerfilPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
 import MyClassesPage from "@/features/profesor/pages/MyClassesPage";
+import ClassHistoryPage from "@/features/profesor/pages/ClassHistoryPage";
 import ProfesorInicioPage from "@/features/profesor/pages/ProfesorInicioPage";
 import StudentListPage from "@/features/profesor/pages/StudentListPage";
 
@@ -51,6 +53,7 @@ const navAdmin: NavItem[] = [
 const navProfesor: NavItem[] = [
   { to: "/profesor/inicio", label: "Inicio", icon: House },
   { to: "/profesor/turnos", label: "Mis turnos", icon: CalendarDays },
+  { to: "/profesor/historial", label: "Historial", icon: History },
   { to: "/profesor/alumnos", label: "Alumnos", icon: UsersRound },
   { to: "/profesor/perfil", label: "Perfil", icon: UserRound },
 ];
@@ -76,6 +79,7 @@ const rutasProfesor: RouteObject = {
     { index: true, element: <Navigate to="inicio" replace /> },
     { path: "inicio", element: <ProfesorInicioPage /> },
     { path: "turnos", element: <MyClassesPage /> },
+    { path: "historial", element: <ClassHistoryPage /> },
     { path: "alumnos", element: <StudentListPage /> },
     { path: "perfil", element: <PerfilPage /> },
   ],

@@ -1,4 +1,5 @@
 import { Button, Card, Input, Select } from "@/components/common";
+import { toApiDate } from "@/utils/dateUtils";
 
 export interface ProfesorFiltros {
   desde: string;
@@ -6,7 +7,7 @@ export interface ProfesorFiltros {
   hora: string;
 }
 
-// Filtros de turnos del profesor: por fecha y por horario.
+// Filtros de turnos del profesor: por fecha y por horario. Solo permite buscar desde hoy en adelante.
 export function ClassFilterBar({
   value,
   horarios,
@@ -18,6 +19,8 @@ export function ClassFilterBar({
   onChange: (value: ProfesorFiltros) => void;
   onReset: () => void;
 }) {
+  const hoy = toApiDate(new Date());
+
   return (
     <Card className="p-4 sm:p-5">
       <form
@@ -29,6 +32,7 @@ export function ClassFilterBar({
           label="Desde"
           type="date"
           value={value.desde}
+          min={hoy}
           max={value.hasta || undefined}
           onChange={(e) => onChange({ ...value, desde: e.target.value })}
         />
@@ -36,7 +40,7 @@ export function ClassFilterBar({
           label="Hasta"
           type="date"
           value={value.hasta}
-          min={value.desde || undefined}
+          min={value.desde || hoy}
           onChange={(e) => onChange({ ...value, hasta: e.target.value })}
         />
         <Select
