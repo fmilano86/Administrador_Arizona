@@ -28,6 +28,7 @@ class UsuarioUpdate(BaseModel):
     password: Optional[str] = None
     eliminado_en: Optional[str] = None
 
+
 class UsuarioResumenOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -37,3 +38,15 @@ class UsuarioResumenOut(BaseModel):
     email: Optional[EmailStr] = None
     telefono: Optional[str] = None
     fecha_nacimiento: Optional[date] = None
+
+
+class CumpleanioOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    nombre: str
+    apellido: str
+    rol: RolUsuario
+    fecha_nacimiento: date
+    dias_restantes: int
+    cumple_hoy: bool

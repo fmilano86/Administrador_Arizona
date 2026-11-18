@@ -16,6 +16,7 @@ class TipoTurno(str, enum.Enum):
 class EstadoTurno(str, enum.Enum):
     CONFIRMADO = "CONFIRMADO"
     CANCELADO = "CANCELADO"
+    EN_ESPERA = "EN_ESPERA"
 
 
 class Turno(Base):

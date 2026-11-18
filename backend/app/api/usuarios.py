@@ -5,10 +5,11 @@ from app.api.deps import require_roles
 from app.db.session import get_db
 from app.models.usuario import RolUsuario
 from app.schemas.auth import UsuarioOut
-from app.schemas.usuario import UsuarioCreate, UsuarioUpdate
+from app.schemas.usuario import CumpleanioOut, UsuarioCreate, UsuarioUpdate
 from app.services.usuario_service import (
     actualizar_usuario,
     crear_usuario,
+    listar_cumpleanios,
     listar_usuarios,
     obtener_usuario,
     obtener_usuario_por_dni,
@@ -25,6 +26,16 @@ def listar(
     _usuario=Depends(require_roles(RolUsuario.ADMINISTRADOR)),
 ):
     return listar_usuarios(db, rol)
+
+
+@router.get("/cumpleanios", response_model=list[CumpleanioOut])
+def cumpleanios(
+    dias: int = Query(7, ge=0, le=365),
+    rol: RolUsuario | None = Query(default=None),
+    db: Session = Depends(get_db),
+    _usuario=Depends(require_roles(RolUsuario.ADMINISTRADOR)),
+):
+    return listar_cumpleanios(db, dias=dias, rol=rol)
 
 
 @router.post("", response_model=UsuarioOut, status_code=status.HTTP_201_CREATED)

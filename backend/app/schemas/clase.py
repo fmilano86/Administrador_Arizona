@@ -27,4 +27,5 @@ class ClaseDetalleOut(BaseModel):
     profesor: UsuarioResumenOut
     turnos_confirmados: int
     cupos_disponibles: int
+    en_espera: int
     mi_turno: Optional[TurnoOut] = None

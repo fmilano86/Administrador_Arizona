@@ -87,6 +87,24 @@ def _es_primera_reserva(
     return query.first() is None
 
 
+def _hay_superposicion(
+    db: Session, alumno_id: int, clase: Clase, excluir_clase_id: int | None = None
+) -> bool:
+    query = (
+        db.query(Turno)
+        .join(Clase, Turno.clase_id == Clase.id)
+        .filter(
+            Turno.alumno_id == alumno_id,
+            Turno.estado == EstadoTurno.CONFIRMADO,
+            Clase.inicio < clase.fin,
+            Clase.fin > clase.inicio,
+        )
+    )
+    if excluir_clase_id is not None:
+        query = query.filter(Turno.clase_id != excluir_clase_id)
+    return query.first() is not None
+
+
 def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
     clase = db.query(Clase).filter(Clase.id == clase_id).first()
     if clase is None:
@@ -104,40 +122,30 @@ def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
             status_code=status.HTTP_409_CONFLICT, detail="La clase ya comenzó"
         )
 
-    confirmados = (
-        db.query(func.count(Turno.id))
-        .filter(Turno.clase_id == clase_id, Turno.estado == EstadoTurno.CONFIRMADO)
-        .scalar()
-    )
-    if confirmados >= clase.cupo_maximo:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="La clase está completa"
-        )
-
     turno_existente = (
         db.query(Turno)
         .filter(Turno.alumno_id == alumno.id, Turno.clase_id == clase_id)
         .first()
     )
-    if turno_existente and turno_existente.estado == EstadoTurno.CONFIRMADO:
+    if turno_existente and turno_existente.estado in (
+        EstadoTurno.CONFIRMADO,
+        EstadoTurno.EN_ESPERA,
+    ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Ya tenés un turno en esta clase",
+            detail="Ya tenés un turno o estás en la lista de espera de esta clase",
         )
 
-    superpuesto = (
-        db.query(Turno)
-        .join(Clase, Turno.clase_id == Clase.id)
-        .filter(
-            Turno.alumno_id == alumno.id,
-            Turno.estado == EstadoTurno.CONFIRMADO,
-            Turno.clase_id != clase_id,
-            Clase.inicio < clase.fin,
-            Clase.fin > clase.inicio,
-        )
-        .first()
+    confirmados = (
+        db.query(func.count(Turno.id))
+        .filter(Turno.clase_id == clase_id, Turno.estado == EstadoTurno.CONFIRMADO)
+        .scalar()
     )
-    if superpuesto:
+    hay_cupo = confirmados < clase.cupo_maximo
+
+    # La superposición de horario solo importa si esto va a quedar confirmado:
+    # estar "en espera" de dos clases que se solapan no es un conflicto real.
+    if hay_cupo and _hay_superposicion(db, alumno.id, clase, excluir_clase_id=clase_id):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Ya tenés otro turno que se superpone con el horario de esta clase",
@@ -153,8 +161,10 @@ def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
     else:
         tipo = TipoTurno.PUNTUAL
 
+    nuevo_estado = EstadoTurno.CONFIRMADO if hay_cupo else EstadoTurno.EN_ESPERA
+
     if turno_existente:
-        turno_existente.estado = EstadoTurno.CONFIRMADO
+        turno_existente.estado = nuevo_estado
         turno_existente.fecha_cancelacion = None
         turno_existente.tipo = tipo
         turno = turno_existente
@@ -163,7 +173,7 @@ def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
             alumno_id=alumno.id,
             clase_id=clase_id,
             tipo=tipo,
-            estado=EstadoTurno.CONFIRMADO,
+            estado=nuevo_estado,
         )
         db.add(turno)
 
@@ -171,9 +181,48 @@ def reservar_turno(db: Session, alumno: Usuario, clase_id: int) -> Turno:
     db.refresh(turno)
     return turno
 
+
+def _promover_siguiente_en_espera(db: Session, clase: Clase) -> None:
+    candidatos = (
+        db.query(Turno)
+        .filter(Turno.clase_id == clase.id, Turno.estado == EstadoTurno.EN_ESPERA)
+        .order_by(Turno.fecha_reserva)
+        .all()
+    )
+    for candidato in candidatos:
+        confirmados = (
+            db.query(func.count(Turno.id))
+            .filter(Turno.clase_id == clase.id, Turno.estado == EstadoTurno.CONFIRMADO)
+            .scalar()
+        )
+        if confirmados >= clase.cupo_maximo:
+            return
+
+        if _hay_superposicion(
+            db, candidato.alumno_id, clase, excluir_clase_id=clase.id
+        ):
+            # Mientras esperaba, se comprometió con otra clase que ahora se superpone:
+            # no puede tomar el lugar, se cancela su espera y se sigue con el próximo.
+            candidato.estado = EstadoTurno.CANCELADO
+            candidato.fecha_cancelacion = datetime.now(tz=TZ_ESTUDIO)
+            db.commit()
+            continue
+
+        candidato.estado = EstadoTurno.CONFIRMADO
+        candidato.fecha_cancelacion = None
+        db.commit()
+        return
+
+
 def cancelar_turno(db: Session, turno: Turno) -> Turno:
+    era_confirmado = turno.estado == EstadoTurno.CONFIRMADO
+
     turno.estado = EstadoTurno.CANCELADO
     turno.fecha_cancelacion = datetime.now(tz=TZ_ESTUDIO)
     db.commit()
     db.refresh(turno)
+
+    if era_confirmado:
+        _promover_siguiente_en_espera(db, turno.clase)
+
     return turno

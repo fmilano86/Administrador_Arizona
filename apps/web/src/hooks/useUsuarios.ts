@@ -4,6 +4,7 @@ import {
   actualizarUsuario,
   cambiarEstadoUsuario,
   crearUsuario,
+  listCumpleanios,
   listUsuarios,
 } from "@/services/userService";
 import type { Rol, UsuarioInput } from "@/types";
@@ -40,5 +41,16 @@ export function useCambiarEstadoUsuario() {
     mutationFn: ({ id, activo }: { id: number; activo: boolean }) =>
       cambiarEstadoUsuario(id, activo),
     onSuccess: () => qc.invalidateQueries({ queryKey: usuarioKeys.all }),
+  });
+}
+
+export const cumpleanioKeys = {
+  list: (dias: number) => ["usuarios", "cumpleanios", dias] as const,
+};
+
+export function useCumpleanios(dias = 7) {
+  return useQuery({
+    queryKey: cumpleanioKeys.list(dias),
+    queryFn: () => listCumpleanios(dias),
   });
 }

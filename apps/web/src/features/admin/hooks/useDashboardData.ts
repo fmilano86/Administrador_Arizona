@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useClases } from "@/hooks/useClases";
-import { useUsuarios } from "@/hooks/useUsuarios";
+import { useCumpleanios, useUsuarios } from "@/hooks/useUsuarios";
 import type { BarDatum } from "@/components/ui/BarChart";
 import {
   diasDeSemana,
@@ -24,6 +24,7 @@ export function useDashboardData() {
     hasta: toApiDate(finSemana(hoy)),
   });
   const alumnos = useUsuarios("ALUMNO");
+  const cumpleanios = useCumpleanios(7);
 
   const datos = useMemo(() => {
     const activas = (clases.data ?? []).filter((c) => c.estado !== "CANCELADA");
@@ -60,17 +61,19 @@ export function useDashboardData() {
       reservasPorDia,
       alumnosActivos: alumnosActivos.length,
       recientes,
+      cumpleanios: cumpleanios.data ?? [],
     };
-  }, [clases.data, alumnos.data, hoy, inicio]);
+  }, [clases.data, alumnos.data, cumpleanios.data, hoy, inicio]);
 
   return {
     ...datos,
-    isLoading: clases.isLoading || alumnos.isLoading,
-    isError: clases.isError || alumnos.isError,
-    error: clases.error ?? alumnos.error,
+    isLoading: clases.isLoading || alumnos.isLoading || cumpleanios.isLoading,
+    isError: clases.isError || alumnos.isError || cumpleanios.isError,
+    error: clases.error ?? alumnos.error ?? cumpleanios.error,
     refetch: () => {
       clases.refetch();
       alumnos.refetch();
+      cumpleanios.refetch();
     },
   };
 }

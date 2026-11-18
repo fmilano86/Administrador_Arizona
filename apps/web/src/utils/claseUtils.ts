@@ -23,11 +23,15 @@ export function claseStatus(clase: ClaseDetalle): ClaseStatus {
   return "DISPONIBLE";
 }
 
-// ¿Un alumno puede reservar esta clase ahora?
+// ¿Un alumno puede reservar esta clase ahora? (si está completa, "reservar" significa anotarse en la lista de espera)
 export function sePuedeReservar(clase: ClaseDetalle) {
   if (clase.mi_turno) return false;
   const status = claseStatus(clase);
-  return status === "DISPONIBLE" || status === "ULTIMOS_LUGARES";
+  return (
+    status === "DISPONIBLE" ||
+    status === "ULTIMOS_LUGARES" ||
+    status === "COMPLETA"
+  );
 }
 
 export const nombreCompleto = (u: { nombre: string; apellido: string }) =>

@@ -28,6 +28,7 @@ export function ClassCard({
   const status = claseStatus(clase);
   const apagada = status === "FINALIZADA" || status === "CANCELADA";
   const reservada = !!clase.mi_turno;
+  const enEspera = clase.mi_turno?.estado === "EN_ESPERA";
 
   return (
     <article
@@ -51,8 +52,8 @@ export function ClassCard({
           {rangoHorario(clase.inicio, clase.fin)}
         </p>
         {reservada ? (
-          <Badge tone="success" dot>
-            Reservada
+          <Badge tone={enEspera ? "warning" : "success"} dot>
+            {enEspera ? "En lista de espera" : "Reservada"}
           </Badge>
         ) : (
           <ClaseStatusBadge clase={clase} />
@@ -87,10 +88,10 @@ export function ClassCard({
         >
           {reservada
             ? "Ver reserva"
-            : status === "COMPLETA"
-              ? "Sin lugares"
-              : status === "EN_CURSO"
-                ? "En curso"
+            : status === "EN_CURSO"
+              ? "En curso"
+              : status === "COMPLETA"
+                ? "Anotarme en lista de espera"
                 : "Reservar"}
         </Button>
       )}

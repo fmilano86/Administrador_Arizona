@@ -4,7 +4,7 @@ export type Rol = "ALUMNO" | "PROFESOR" | "ADMINISTRADOR";
 export type EstadoBloque = "ACTIVO" | "FINALIZADO" | "CANCELADO";
 export type FrecuenciaBloque = "SEMANAL";
 export type EstadoClase = "PROGRAMADA" | "CANCELADA" | "FINALIZADA";
-export type EstadoTurno = "CONFIRMADO" | "CANCELADO";
+export type EstadoTurno = "CONFIRMADO" | "CANCELADO" | "EN_ESPERA";
 export type TipoTurno = "PUNTUAL" | "RECURRENTE" | "PRUEBA";
 
 // Fecha ISO 8601 con zona horaria (TIMESTAMPTZ).
@@ -93,10 +93,21 @@ export interface ClaseDetalle extends Clase {
   profesor: UsuarioResumen;
   turnos_confirmados: number;
   cupos_disponibles: number;
-  mi_turno?: Turno | null; // Solo para el rol ALUMNO: su turno confirmado en esta clase, si existe.
+  en_espera: number;
+  mi_turno?: Turno | null; // Solo para el rol ALUMNO: su turno (confirmado o en lista de espera) en esta clase, si existe.
 }
 
 export interface TurnoDetalle extends Turno {
   clase: ClaseDetalle;
   alumno: UsuarioResumen;
+}
+
+export interface Cumpleanio {
+  id: number;
+  nombre: string;
+  apellido: string;
+  rol: Rol;
+  fecha_nacimiento: IsoDate;
+  dias_restantes: number;
+  cumple_hoy: boolean;
 }

@@ -18,12 +18,30 @@ TZ_ESTUDIO = ZoneInfo("America/Argentina/Buenos_Aires")
 def _inicio_dia(fecha: date) -> datetime:
     return datetime.combine(fecha, time.min, tzinfo=TZ_ESTUDIO)
 
+
 def finalizar_clases_vencidas(db: Session) -> None:
     ahora = datetime.now(tz=TZ_ESTUDIO)
-    db.query(Clase).filter(
-        Clase.estado == EstadoClase.PROGRAMADA, Clase.fin <= ahora
-    ).update({"estado": EstadoClase.FINALIZADA}, synchronize_session=False)
+    vencidas = (
+        db.query(Clase.id)
+        .filter(Clase.estado == EstadoClase.PROGRAMADA, Clase.fin <= ahora)
+        .all()
+    )
+    ids = [c.id for c in vencidas]
+    if not ids:
+        return
+
+    db.query(Clase).filter(Clase.id.in_(ids)).update(
+        {"estado": EstadoClase.FINALIZADA}, synchronize_session=False
+    )
+    # Ya no tiene sentido seguir "en espera" de una clase que terminó.
+    db.query(Turno).filter(
+        Turno.clase_id.in_(ids), Turno.estado == EstadoTurno.EN_ESPERA
+    ).update(
+        {"estado": EstadoTurno.CANCELADO, "fecha_cancelacion": ahora},
+        synchronize_session=False,
+    )
     db.commit()
+
 
 def listar_clases(
     db: Session,
@@ -67,13 +85,21 @@ def _contar_turnos_confirmados(db: Session, clase_id: int) -> int:
     )
 
 
+def _contar_en_espera(db: Session, clase_id: int) -> int:
+    return (
+        db.query(func.count(Turno.id))
+        .filter(Turno.clase_id == clase_id, Turno.estado == EstadoTurno.EN_ESPERA)
+        .scalar()
+    )
+
+
 def _obtener_mi_turno(db: Session, clase_id: int, alumno_id: int) -> Turno | None:
     return (
         db.query(Turno)
         .filter(
             Turno.clase_id == clase_id,
             Turno.alumno_id == alumno_id,
-            Turno.estado == EstadoTurno.CONFIRMADO,
+            Turno.estado.in_([EstadoTurno.CONFIRMADO, EstadoTurno.EN_ESPERA]),
         )
         .first()
     )
@@ -83,6 +109,7 @@ def construir_detalle(
     db: Session, clase: Clase, usuario_actual: Usuario
 ) -> ClaseDetalleOut:
     confirmados = _contar_turnos_confirmados(db, clase.id)
+    en_espera = _contar_en_espera(db, clase.id)
 
     mi_turno = None
     if usuario_actual.rol == RolUsuario.ALUMNO:
@@ -105,6 +132,7 @@ def construir_detalle(
         profesor=UsuarioResumenOut.model_validate(clase.profesor),
         turnos_confirmados=confirmados,
         cupos_disponibles=clase.cupo_maximo - confirmados,
+        en_espera=en_espera,
         mi_turno=mi_turno,
     )
 
@@ -115,7 +143,10 @@ def cancelar_clase(db: Session, clase: Clase) -> Clase:
     ahora = datetime.now(tz=TZ_ESTUDIO)
     turnos = (
         db.query(Turno)
-        .filter(Turno.clase_id == clase.id, Turno.estado == EstadoTurno.CONFIRMADO)
+        .filter(
+            Turno.clase_id == clase.id,
+            Turno.estado.in_([EstadoTurno.CONFIRMADO, EstadoTurno.EN_ESPERA]),
+        )
         .all()
     )
     for turno in turnos:

@@ -78,7 +78,10 @@ def cancelar_bloque(db: Session, bloque: BloqueClase) -> BloqueClase:
         clase.estado = EstadoClase.CANCELADA
         turnos = (
             db.query(Turno)
-            .filter(Turno.clase_id == clase.id, Turno.estado == EstadoTurno.CONFIRMADO)
+            .filter(
+                Turno.clase_id == clase.id,
+                Turno.estado.in_([EstadoTurno.CONFIRMADO, EstadoTurno.EN_ESPERA]),
+            )
             .all()
         )
         for turno in turnos:

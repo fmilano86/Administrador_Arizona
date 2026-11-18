@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import type { Rol, Usuario, UsuarioInput } from "@/types";
+import type { Cumpleanio, Rol, Usuario, UsuarioInput } from "@/types";
 
 export const listUsuarios = (rol: Rol) =>
   api.get<Usuario[]>("/usuarios", { params: { rol } }).then((r) => r.data);
@@ -16,4 +16,9 @@ export const cambiarEstadoUsuario = (id: number, activo: boolean) =>
     .patch<Usuario>(`/usuarios/${id}`, {
       eliminado_en: activo ? null : new Date().toISOString(),
     })
+    .then((r) => r.data);
+
+export const listCumpleanios = (dias = 7) =>
+  api
+    .get<Cumpleanio[]>("/usuarios/cumpleanios", { params: { dias } })
     .then((r) => r.data);

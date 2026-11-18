@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { CalendarCheck, Gauge, Ticket, Users, UsersRound } from "lucide-react";
+import { Cake, CalendarCheck, Gauge, Ticket, Users, UsersRound } from "lucide-react";
 
 import {
   Avatar,
+  Badge,
   Button,
   Card,
   EmptyState,
@@ -151,6 +152,42 @@ export default function DashboardPage() {
                   data={d.reservasPorDia}
                   ariaLabel="Reservas por día de esta semana"
                 />
+              </Card>
+              <Card className="space-y-4 p-6">
+                <h2 className="text-h3 font-semibold">
+                  Cumpleaños de la semana
+                </h2>
+                {d.cumpleanios.length === 0 ? (
+                  <EmptyState
+                    icon={<Cake />}
+                    title="Sin cumpleaños esta semana"
+                  />
+                ) : (
+                  <ul className="divide-y divide-oliva-100">
+                    {d.cumpleanios.map((c) => (
+                      <li key={c.id} className="flex items-center gap-3 py-3">
+                        <Avatar
+                          nombre={c.nombre}
+                          apellido={c.apellido}
+                          size="sm"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium">
+                            {nombreCompleto(c)}
+                          </p>
+                          <p className="truncate text-xs text-oliva-600">
+                            {c.rol === "ALUMNO" ? "Alumno/a" : "Profesor/a"}
+                          </p>
+                        </div>
+                        <Badge tone={c.cumple_hoy ? "accent" : "neutral"}>
+                          {c.cumple_hoy
+                            ? "¡Hoy!"
+                            : `En ${c.dias_restantes} día${c.dias_restantes === 1 ? "" : "s"}`}
+                        </Badge>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </Card>
             </div>
           </div>
