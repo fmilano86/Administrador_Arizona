@@ -100,11 +100,11 @@ El sistema está funcional de punta a punta: backend, base de datos y frontend w
 - Historial de clases dictadas para el profesor (separado de la agenda del día a día).
 - Restricción de búsqueda a fechas futuras para alumno y profesor.
 - Migraciones de base de datos con Alembic, sobre una base PostgreSQL alojada en Supabase.
+- Suite de tests automatizados (pytest) sobre las reglas de negocio críticas del backend: autenticación, cupos, superposición horaria, y lista de espera con promoción automática. Ver [`/backend/README.md`](./backend/README.md#tests).
 
 **Pendiente para la entrega final:**
 
 - Despliegue en línea del sistema (ver [sección 9](#9-despliegue)).
-- Suite de tests automatizados del backend.
 - Informe Final en PDF y video de presentación (ver [sección 10](#10-informe-final-y-video)).
 
 ### 6. Estructura del repositorio
@@ -113,7 +113,7 @@ El sistema está funcional de punta a punta: backend, base de datos y frontend w
 Administrador_Arizona/
 ├── apps/
 │   └── web/          # Frontend: React + TypeScript + Vite.
-├── backend/          # Backend: FastAPI, SQLAlchemy, Alembic.
+├── backend/          # Backend: FastAPI, SQLAlchemy, Alembic, tests (pytest).
 ├── database/         # schema.sql: script DDL de PostgreSQL.
 ├── docs/             # arquitectura.md, contrato-api.md, modelo-datos.md, modulos.md.
 ├── Imagenes/         # Material de diseño (figma, paleta de colores, logos).
@@ -138,7 +138,7 @@ Credenciales de prueba contra el backend real: pedir al equipo (no se publican e
 - No incluye notificaciones por email ni push (quedaron para una etapa posterior, según lo definido en `docs/modulos.md`).
 - No incluye gestión de pagos ni facturación.
 - No se implementó la aplicación mobile ni el paquete de código compartido planificados originalmente.
-- No cuenta todavía con una suite de tests automatizados.
+- La suite de tests automatizados cubre las reglas de negocio críticas (autenticación, cupos, superposición horaria, lista de espera), pero no la totalidad de la API.
 
 ### 9. Despliegue
 
