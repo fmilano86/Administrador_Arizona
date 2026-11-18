@@ -13,10 +13,11 @@ TZ_ESTUDIO = ZoneInfo("America/Argentina/Buenos_Aires")
 
 
 def listar_bloques(db: Session) -> list[BloqueClase]:
+    finalizar_bloques_vencidos(db)
     return db.query(BloqueClase).order_by(BloqueClase.fecha_desde.desc()).all()
 
-
 def obtener_bloque(db: Session, bloque_id: int) -> BloqueClase | None:
+    finalizar_bloques_vencidos(db)
     return db.query(BloqueClase).filter(BloqueClase.id == bloque_id).first()
 
 
@@ -87,3 +88,10 @@ def cancelar_bloque(db: Session, bloque: BloqueClase) -> BloqueClase:
     db.commit()
     db.refresh(bloque)
     return bloque
+
+def finalizar_bloques_vencidos(db: Session) -> None:
+    hoy = datetime.now(tz=TZ_ESTUDIO).date()
+    db.query(BloqueClase).filter(
+        BloqueClase.estado == EstadoBloque.ACTIVO, BloqueClase.fecha_hasta < hoy
+    ).update({"estado": EstadoBloque.FINALIZADO}, synchronize_session=False)
+    db.commit()

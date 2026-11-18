@@ -18,6 +18,12 @@ TZ_ESTUDIO = ZoneInfo("America/Argentina/Buenos_Aires")
 def _inicio_dia(fecha: date) -> datetime:
     return datetime.combine(fecha, time.min, tzinfo=TZ_ESTUDIO)
 
+def finalizar_clases_vencidas(db: Session) -> None:
+    ahora = datetime.now(tz=TZ_ESTUDIO)
+    db.query(Clase).filter(
+        Clase.estado == EstadoClase.PROGRAMADA, Clase.fin <= ahora
+    ).update({"estado": EstadoClase.FINALIZADA}, synchronize_session=False)
+    db.commit()
 
 def listar_clases(
     db: Session,
@@ -28,6 +34,7 @@ def listar_clases(
     profesor_id: int | None = None,
     estado: EstadoClase | None = None,
 ) -> list[Clase]:
+    finalizar_clases_vencidas(db)
     query = db.query(Clase)
 
     if usuario_actual.rol == RolUsuario.PROFESOR:
@@ -48,6 +55,7 @@ def listar_clases(
 
 
 def obtener_clase(db: Session, clase_id: int) -> Clase | None:
+    finalizar_clases_vencidas(db)
     return db.query(Clase).filter(Clase.id == clase_id).first()
 
 

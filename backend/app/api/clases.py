@@ -69,7 +69,7 @@ def cancelar(
         )
     if clase.estado != EstadoClase.PROGRAMADA:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="La clase ya está cancelada"
+            status_code=status.HTTP_409_CONFLICT, detail="La clase ya terminó o está cancelada"
         )
     clase = cancelar_clase(db, clase)
     return construir_detalle(db, clase, usuario_actual)
