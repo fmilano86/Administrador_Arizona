@@ -6,17 +6,33 @@ Aplicación web de gestión de turnos para alumnos, profesores y administración
 
 ## Cómo ejecutarlo
 
+1. Levantar el backend real (ver [`backend/README.md`](../../backend/README.md)) — por defecto queda escuchando en `http://127.0.0.1:8000`.
+2. Copiar `.env.example` como `.env` y, si el backend corre en otra URL (por ejemplo, ya desplegado), ajustar `VITE_API_URL`.
+3. Instalar dependencias y levantar la app:
+
 ```bash
 cd apps/web
 npm install
-npm run dev:all      # app en http://localhost:5173 + API simulada en http://localhost:3001
+npm run dev      # app en http://localhost:5173
+```
+
+### Cuentas de prueba (backend real)
+
+Pedí credenciales de prueba al equipo — no se publican en este README. Cualquier usuario creado con rol `ALUMNO`, `PROFESOR` o `ADMINISTRADOR` ve el panel correspondiente a su rol.
+
+## API simulada (mock, opcional)
+
+Antes de tener el backend real se armó una API simulada con JSON Server, pensada para trabajar en el frontend sin depender de la base de datos. Todavía sirve para eso, pero **no es el sistema real**: las reglas de negocio vigentes viven en el backend FastAPI.
+
+```bash
+npm run dev:all      # app + API simulada en http://localhost:3001
 ```
 
 También se pueden levantar por separado: `npm run dev` (app) y `npm run mock` (API simulada).
 
-### Cuentas de prueba
+`mock/db.json` se genera la primera vez con clases **relativas a la fecha de hoy**, así siempre hay clases por reservar. No se sube a Git. Para regenerarlo: `npm run mock:reset`. La API simulada replica las reglas del MVP (cupo de 7, sin superposición horaria, sin reservas duplicadas) y agrega una latencia de 250 ms para ver los estados de carga (`MOCK_DELAY=0` la desactiva).
 
-Contraseña para todas: `Arizona123!`
+Cuentas de prueba de la API simulada (contraseña `Arizona123!` para todas — **no son válidas contra el backend real**):
 
 | Rol            | Correo                         |
 | -------------- | ------------------------------ |
@@ -24,22 +40,10 @@ Contraseña para todas: `Arizona123!`
 | Profesora      | `laura.gomez@arizona.test`     |
 | Administradora | `marina.ferrer@arizona.test`   |
 
-La pantalla de login tiene un desplegable "Cuentas de prueba" (solo en desarrollo) que las completa por vos.
-
-### Datos de ejemplo
-
-`mock/db.json` se genera la primera vez con clases **relativas a la fecha de hoy**, así siempre hay clases por reservar. No se sube a Git. Para regenerarlo: `npm run mock:reset`. La API simulada replica las reglas del MVP (cupo de 7, sin superposición horaria, sin reservas duplicadas) y agrega una latencia de 250 ms para ver los estados de carga (`MOCK_DELAY=0` la desactiva).
-
-## Conectar con el backend real
-
-1. Revisar `docs/contrato-api.md`: es lo que el frontend espera de la API.
-2. Cambiar `VITE_API_URL` en `.env`.
-3. Listo, toda la comunicación pasa por `src/services/` y `src/lib/axios.ts`.
-
 ## Scripts
 
 | Comando              | Qué hace                                       |
-| -------------------- | ---------------------------------------------- |
+| -------------------- | ----------------------------------------------- |
 | `npm run dev`        | Servidor de desarrollo de Vite                 |
 | `npm run mock`       | API simulada (JSON Server + reglas de negocio) |
 | `npm run mock:reset` | Regenera `mock/db.json`                        |
