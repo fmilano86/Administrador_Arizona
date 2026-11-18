@@ -5,6 +5,8 @@
 1. Crear y activar un entorno virtual.
 2. Instalar las dependencias:
 
+**Nota (macOS + Python 3.13):** si la instalación falla en el paquete `psycopg2-binary` (no compila en algunas versiones de Python/macOS), instalá `psycopg` en su lugar:
+
 ```bash
 pip install -r requirements.txt
 ```
