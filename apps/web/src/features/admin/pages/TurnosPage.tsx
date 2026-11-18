@@ -13,7 +13,7 @@ import { DataTable, type Column } from "@/components/ui/DataTable";
 import { useActividades } from "@/hooks/useActividades";
 import { useTurnos } from "@/hooks/useTurnos";
 import { cn } from "@/lib/cn";
-import type { TurnoDetalle } from "@/types";
+import type { EstadoTurno, TurnoDetalle } from "@/types";
 import { nombreCompleto } from "@/utils/claseUtils";
 import {
   addDays,
@@ -30,6 +30,15 @@ import {
 } from "../components/BookingsFilterBar";
 
 const TAMANO_PAGINA = 25;
+
+const ESTADO_BADGE: Record<
+  EstadoTurno,
+  { label: string; tone: "success" | "warning" | "danger"; dot?: boolean }
+> = {
+  CONFIRMADO: { label: "Confirmado", tone: "success", dot: true },
+  EN_ESPERA: { label: "En espera", tone: "warning" },
+  CANCELADO: { label: "Cancelado", tone: "danger" },
+};
 
 const filtrosIniciales = (): TurnosFiltros => {
   const hoy = startOfDay(new Date());
@@ -66,7 +75,8 @@ export default function TurnosPage() {
 
   const todos = turnos.data ?? [];
   const confirmados = todos.filter((t) => t.estado === "CONFIRMADO").length;
-  const cancelados = todos.length - confirmados;
+  const enEspera = todos.filter((t) => t.estado === "EN_ESPERA").length;
+  const cancelados = todos.length - confirmados - enEspera;
 
   const columnas: Column<TurnoDetalle>[] = [
     {
@@ -116,14 +126,14 @@ export default function TurnosPage() {
     {
       key: "estado",
       header: "Estado",
-      cell: (t) =>
-        t.estado === "CONFIRMADO" ? (
-          <Badge tone="success" dot>
-            Confirmado
+      cell: (t) => {
+        const { label, tone, dot } = ESTADO_BADGE[t.estado];
+        return (
+          <Badge tone={tone} dot={dot}>
+            {label}
           </Badge>
-        ) : (
-          <Badge tone="danger">Cancelado</Badge>
-        ),
+        );
+      },
     },
   ];
 
@@ -158,6 +168,7 @@ export default function TurnosPage() {
           <p className="text-sm text-oliva-700" aria-live="polite">
             {confirmados}{" "}
             {confirmados === 1 ? "reserva confirmada" : "reservas confirmadas"}
+            {enEspera > 0 && ` · ${enEspera} en espera`}
             {cancelados > 0 &&
               ` · ${cancelados} ${cancelados === 1 ? "cancelada" : "canceladas"}`}
           </p>

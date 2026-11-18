@@ -24,7 +24,7 @@ export function BookingsFilterBar({
       <form
         onSubmit={(e) => e.preventDefault()}
         aria-label="Filtrar turnos"
-        className="grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]"
+        className="grid items-end gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto]"
       >
         <Input
           label="Desde"
@@ -44,6 +44,7 @@ export function BookingsFilterBar({
           label="Actividad"
           value={value.actividadId}
           onChange={(e) => onChange({ ...value, actividadId: e.target.value })}
+          className="sm:col-span-2 md:col-span-1"
         >
           <option value="">Todas las actividades</option>
           {actividades.map((a) => (
@@ -52,7 +53,11 @@ export function BookingsFilterBar({
             </option>
           ))}
         </Select>
-        <Button variant="ghost" onClick={onReset}>
+        <Button
+          variant="ghost"
+          onClick={onReset}
+          className="sm:col-span-2 md:col-span-3 lg:col-span-1"
+        >
           Restablecer
         </Button>
       </form>

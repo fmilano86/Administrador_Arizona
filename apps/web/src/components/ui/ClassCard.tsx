@@ -91,7 +91,9 @@ export function ClassCard({
             : status === "EN_CURSO"
               ? "En curso"
               : status === "COMPLETA"
-                ? "Anotarme en lista de espera"
+                ? compact
+                  ? "Lista de espera"
+                  : "Anotarme en lista de espera"
                 : "Reservar"}
         </Button>
       )}
