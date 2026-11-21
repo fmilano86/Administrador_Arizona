@@ -68,8 +68,8 @@ capa HTTP y de la base de datos.
 | Frontend mobile             | React Native con Expo + TypeScript, `apps/mobile/`             | Mejora futura; carpeta aún no creada                                |
 | Código compartido           | Paquete TypeScript de tipos y validaciones, `packages/shared/` | Previsto si se incorpora mobile; carpeta y workspace aún no creados |
 | Notificaciones              | Email vía SMTP y push vía Expo Notifications                   | Mejora futura                                                       |
-| Despliegue frontend         | Vercel o Netlify                                               | Alternativas a evaluar                                              |
-| Despliegue backend          | Render o Railway                                               | Alternativas a evaluar                                              |
+| Despliegue frontend         | Vercel                                                         | Alternativas a evaluar                                              |
+| Despliegue backend          | Render                                                         | Alternativas a evaluar                                              |
 | Despliegue de base de datos | Supabase u otro proveedor PostgreSQL                           | Alternativas a evaluar                                              |
 
 ## 6. Justificación técnica
@@ -78,7 +78,7 @@ capa HTTP y de la base de datos.
 
 **Costo de aprendizaje vs. tiempo de desarrollo.** El equipo ya tiene experiencia previa en React, Python y bases de datos relacionales, lo que reduce la curva de aprendizaje y deja más tiempo para el desarrollo funcional.
 
-**Entorno de despliegue.** Se priorizaron plataformas PaaS (Vercel/Netlify, Render/Railway, Supabase) por sobre servidores o contenedores propios, dado que el equipo no cuenta con experiencia avanzada en DevOps y estas plataformas permiten desplegar con configuración mínima, acorde a los plazos del cuatrimestre.
+**Entorno de despliegue.** Se priorizaron plataformas PaaS (Vercel, Render, Supabase) por sobre servidores o contenedores propios, dado que el equipo no cuenta con experiencia avanzada en DevOps y estas plataformas permiten desplegar con configuración mínima, acorde a los plazos del cuatrimestre.
 
 **Riesgo de cambio de tecnología.** Al ser un stack estándar y muy documentado (React, FastAPI, PostgreSQL), se minimiza el riesgo de tener que migrar tecnologías en etapas avanzadas del proyecto.
 
