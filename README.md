@@ -1,4 +1,4 @@
-# Tecnicatura Universitaria en Programación a Distancia
+# Tecnicatura Universitaria en Programación a Distancia (TUPaD) - UTN
 
 ## Trabajo Final Integrador
 
@@ -34,8 +34,7 @@ Más allá de digitalizar el proceso existente, la propuesta busca agregar valor
 
 ### 3. Plan de trabajo y stack tecnológico
 
-- **Frontend Web:** React + TypeScript (Vite)
-- **Frontend Mobile:** React Native con Expo + TypeScript
+- **Frontend Web:** React + TypeScript (Vite) + Tailwind
 - **Backend:** Python + FastAPI (API REST), autenticación JWT
 - **Base de datos:** PostgreSQL, vía SQLAlchemy (ORM)
 - **Código compartido:** paquete TypeScript compartido (tipos y validaciones) entre web y mobile, en un monorepo pnpm
@@ -51,9 +50,9 @@ Estas funcionalidades de notificación se consideran parte de las mejoras poster
 
 #### 3.2 Despliegue
 
-- **Frontend Web:** Vercel/Netlify
-- **Backend:** Render/Railway
-- **Base de datos:** Supabase o similar
+- **Frontend Web:** Vercel
+- **Backend:** Render
+- **Base de datos:** Supabase
 
 Ver el estado real del despliegue en la [sección 9](#9-despliegue).
 
@@ -67,8 +66,7 @@ La selección del stack se basó en los siguientes criterios:
 
 #### 4.1 Escala y madurez del problema
 
-Al tratarse de un sistema de uso acotado (un solo estudio, decenas de alumnos concurrentes) no se justifica una arquitectura distribuida ni bases de datos NoSQL. Se optó por PostgreSQL por sobre alternativas no relacionales debido a la naturaleza fuertemente relacional del dominio (alumnos, turnos, horarios y pagos con relaciones e
-integridad referencial claras), y porque las consultas de disponibilidad de cupos y validación de superposición requieren transacciones consistentes, algo que un modelo no relacional dificultaría.
+Al tratarse de un sistema de uso acotado (un solo estudio, decenas de alumnos concurrentes) no se justifica una arquitectura distribuida ni bases de datos NoSQL. Se optó por PostgreSQL por sobre alternativas no relacionales debido a la naturaleza fuertemente relacional del dominio (alumnos, turnos, horarios y pagos con relaciones e integridad referencial claras), y porque las consultas de disponibilidad de cupos y validación de superposición requieren transacciones consistentes, algo que un modelo no relacional dificultaría.
 
 #### 4.2 Costo de aprendizaje vs. tiempo de desarrollo
 
@@ -112,7 +110,7 @@ El sistema está funcional de punta a punta: backend, base de datos y frontend w
 ```text
 Administrador_Arizona/
 ├── apps/
-│   └── web/          # Frontend: React + TypeScript + Vite.
+│   └── web/          # Frontend: React + TypeScript + Vite + Tailwind.
 ├── backend/          # Backend: FastAPI, SQLAlchemy, Alembic, tests (pytest).
 ├── database/         # schema.sql: script DDL de PostgreSQL.
 ├── docs/             # arquitectura.md, contrato-api.md, modelo-datos.md, modulos.md.
@@ -142,9 +140,35 @@ Credenciales de prueba contra el backend real: pedir al equipo (no se publican e
 
 ### 9. Despliegue
 
-`[PENDIENTE: completar con el/los enlace(s) al sistema desplegado — frontend en Vercel/Netlify y/o backend en Render/Railway — antes de la entrega final.]`
+[`¡Ir a la app!`](https://administrador-arizona.vercel.app/)
 
-### 10. Informe Final y video
+### 10. Usuarios de prueba
 
-- Informe Final (PDF): `[PENDIENTE: enlace o ruta dentro del repositorio]`
-- Video de presentación: `[PENDIENTE: enlace]`
+```text
+Administrador:
+  celeste@test.com
+  celester
+```
+
+```text
+Profesores:
+  ana.torres@arizonaqa.com
+  ProfesorTest123
+
+  maria.gonzalez@arizonaqa.com
+  ProfesorTest321
+```
+
+```text
+Alumnos:
+  juan.perez@arizonaqa.com
+  AlumnoTest123
+
+  laura.gomez@arizonaqa.com
+  Prueba1234
+```
+
+### 11. Informe Final y video
+
+- Informe Final (PDF): [`¡Ir al informe!`](TFI_Informe%20Final_Administrador%20Arizona.pdf)
+- Video de presentación: [`¡Ir al video!`](https://drive.google.com/file/d/1ouW3w09VPfPqhtbJZ65ErOmLqh83buVB/view?usp=drive_link)
